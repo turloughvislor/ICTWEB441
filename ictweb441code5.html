@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* What the website will look like in light mode */
+body {
+    background-color: white;
+    color: black;
+}    
+   /* What the website will look like in dark mode */
+.darkmode  {
+    background-color:rgb(22, 34, 99);
+    color: white;
+}   
+    /* Styling the light switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+/* Hides the default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Styling the slider and adds a transition to make the button appear smooth */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like before it is checked and adds transition */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like when the slider is checked */
+input:checked + .slider {
+  background-color:rgb(22, 34, 99);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px rgb(22, 34, 99);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+</style>
+</head>
+<body>
+
+<div id="darkModeContainer">  
+  <label class="switch">
+    <input type="checkbox" checked onclick="myFunction()">
+    <span class="slider round"></span>
+  </label>
+  <p>Toggle dark mode on/off</p>
+</div>  
+
+<div id="rssContainer">
+    <button onclick="fetchRSS()">Fetch RSS\</button>
+    <p id="rssDescription">RSS description</p>
+</div>
+<p id="demo">demo</p>
+
+<script>
+function myFunction() {
+  var element = document.body;
+  element.classList.toggle("darkmode");
+}
+const x = document.getElementById("demo");
+
+function fetchRSS() {
+    const fetchRSS = "https://rss.app/feeds/4qGbn1o6RKIXN8sr.xml";
+
+    try {
+        fetch(fetchRSS)
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml")) 
+        .then(data => {
+            console.log(data);
+            const items = data.querySelectorAll("item");
+            let html = ``;
+
+            items.forEach(el => {
+                const title = el.querySelector("title").textContent;
+                const link = el.querySelector("link").textContent;
+                const imageUrl = el.querySelector("media\\:content") ? el.querySelector("media\\:content").getAttribute("url") : '';
+
+                html += `
+                    <div class="rss-item">
+                        <h2>
+                            <a href="${link}" target="_blank" rel="noopener">
+                            ${title}
+                            </a>
+                        </h2>
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${title} image">` : ''}
+                    </div>
+                `;
+            });
+
+            x.innerHTML = html;
+        });
+
+    } catch (error) {
+        console.error(error);
+    }
+}   
+
+</script>
+
+</body>
+</html>
+
