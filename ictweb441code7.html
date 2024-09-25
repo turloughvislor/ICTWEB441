@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 
+  Title: RSS and lightmode/darkmode demo
+  Author: Kassandra Owen
+  Author email: kassie.owen@live.com
+  Version: 1.0
+  Description: This code is to demonstrate how two Javascript functions dynamically change the webpage.
+  The functions are designed to fetch data from an RSS feed and display it in HTML,
+  and to change the CSS styling of the webpage from lightmode to darkmode. 
+  -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* What the website will look like in light mode */
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(211, 236, 237);
+    color: rgb(22, 34, 99);
+}    
+   /* What the website will look like in dark mode */
+.darkmode  {
+    font-family: Arial, sans-serif;
+    background-color:rgb(22, 34, 99);
+    color: white;
+}   
+    /* Styling the light switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+/* Hides the default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Styling the slider and adds a transition to make the button appear smooth */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like before it is checked and adds transition */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like when the slider is checked */
+input:checked + .slider {
+  background-color:rgb(22, 34, 99);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px rgb(22, 34, 99);
+}
+/* Web kit animations applied to the slider */
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+/* Makes the slider rounded */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+/* Positions the dark mode button and text */
+#darkModeContainer {
+    margin-left: 1650px;
+    margin-top: 20px;
+
+}
+/* Positions the bar where the darkmode button sits and fixes it to the bottom of the page */
+.bottombar {
+    overflow: hidden;
+    background-color: lightblue;
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
+}
+/* Changes the bar to darkmode when button is clicked */
+.bottombardark {
+    overflow: hidden;
+    background-color: rgb(5, 12, 48);
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
+}
+
+/* Positions image */
+#image {
+    width: 20%;
+    margin-left:20px;
+}
+</style>
+</head>
+<body>
+  <!-- Webpage heading and image -->
+    <h3>
+        Welcome to cat!
+    </h3> 
+    <img src="cat2.png" alt="cat!"> 
+    <!-- Contains the bottom bar, which then contains the container for the darkmode button -->
+<div class="bottombar">
+    <div id="darkModeContainer">
+      <!-- Creates button for enabling darkmode -->  
+      <label class="switch">
+        <!-- Applies checkbox type to button and assigns Javascript functions that enable darkmode -->
+        <input type="checkbox" checked onclick="myFunction(); myFunction2();">
+        <span class="slider round"></span>
+      </label>
+      <p>Toggle dark mode on/off</p>
+    </div>  
+</div>
+<!-- Container for the RSS data to be displayed -->
+<div id="rssContainer">
+  <!-- Assigns Javascript functions when the button is clicked that display the RSS data -->
+    <button onclick="fetchRSS(); esther(); textAppear()" id="btnID">Click here for cat!</button>
+    <!-- Text that will appear with a Javascript function when the button is clicked-->
+    <div id="textField" style="display: none;">
+        Click the links for more cat!
+      </div>
+</div>
+<!-- Element for RSS data to be displayed in when script "fetchRSS" is run -->
+<p id="demo"></p>
+<!-- Element for image to be displayed in when script "esther" is run -->
+<img id="image" src=""/>
+
+<script>
+  // Function that changes the body element from light to darkmode 
+function myFunction() {
+    var element = document.body;
+    element.classList.toggle("darkmode");
+}
+// Function that changes the bottom bar element from light to darkmode
+function myFunction2() {
+    var element = document.querySelector('.bottombar');
+    element.classList.toggle("bottombardark");
+}
+// Finds the demo element and stores reference to it with the value x
+const x = document.getElementById("demo");
+
+function fetchRSS() {
+  // URL the RSS feed to fetch from
+    const fetchRSS = "https://rss.app/feeds/4qGbn1o6RKIXN8sr.xml";
+  
+    try {
+      // Fetches the RSS feed
+        fetch(fetchRSS)
+        // Convert response to text
+        .then(response => response.text())
+        // Parses the text to XML
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml")) 
+        .then(data => {
+          // Logs the parsed XML data to the console
+            console.log(data);
+            // Select all <item> elements from the XML
+            const items = data.querySelectorAll("item");
+            // Initialize an empty string for HTML content to sit
+            let html = ``;
+              // Loops through each <item> element
+            items.forEach(el => {
+              // Get title and link from <item> elements
+                const title = el.querySelector("title").textContent;
+                const link = el.querySelector("link").textContent;
+                // Get the media content URL
+                // Please disregard a lot of this media content queries, 
+                // I couldn't get it to work but deleting it breaks my code lol
+                // :(
+                const imageUrl = el.querySelector("media\\:content") ? el.querySelector("media\\:content").getAttribute("url") : '';
+                // Makes HTML for each RSS item
+                html += `
+                    <div class="rss-item">
+                        <h2>
+                            <a href="${link}" target="_blank" rel="noopener">
+                            ${title}
+                            </a>
+                        </h2>
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${title} image">` : ''}
+                    </div>
+                `;
+            });
+            // Insert the HTML into the element referenced by x
+            x.innerHTML = html;
+        });
+
+    } catch (error) {
+      // Log any errors that occur duting the fetch process
+        console.error(error);
+    }
+}   
+
+function esther() {
+  // Gets image element by ID
+  let image = document.getElementById("image");
+  // Get source of the image
+    image.src = "https://i.imgur.com/wOqSzui.jpeg"
+    document.getElementById("btnID")
+    .style.display = "none";
+        }
+
+function textAppear() {
+  // Get text element by ID
+    var text = document.getElementById("textField");
+    // Change the display style to block to make it visible 
+  text.style.display = "block";
+}
+</script>
+
+</body>
+</html>
+
