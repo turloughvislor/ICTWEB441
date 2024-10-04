@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- 
+  Title: RSS and lightmode/darkmode demo
+  Author: Kassandra Owen
+  Author email: kassie.owen@live.com
+  Version: 1.0
+  Description: This code is to demonstrate how two Javascript functions dynamically change the webpage.
+  The functions are designed to fetch data from an RSS feed and display it in HTML,
+  and to change the CSS styling of the webpage from lightmode to darkmode. 
+  -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* What the website will look like in light mode */
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(211, 236, 237);
+    color: rgb(22, 34, 99);
+}    
+   /* What the website will look like in dark mode */
+.darkmode  {
+    font-family: Arial, sans-serif;
+    background-color:rgb(22, 34, 99);
+    color: white;
+}   
+    /* Styling the light switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+/* Hides the default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Styling the slider and adds a transition to make the button appear smooth */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like before it is checked and adds transition */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+/* What the slider looks like when the slider is checked */
+input:checked + .slider {
+  background-color:rgb(22, 34, 99);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px rgb(22, 34, 99);
+}
+/* Web kit animations applied to the slider */
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+/* Makes the slider rounded */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+/* Positions the dark mode button and text */
+#darkModeContainer {
+    margin-left: 1650px;
+    margin-top: 20px;
+
+}
+/* Positions the bar where the darkmode button sits and fixes it to the bottom of the page */
+.bottombar {
+    overflow: hidden;
+    background-color: lightblue;
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
+}
+/* Changes the bar to darkmode when button is clicked */
+.bottombardark {
+    overflow: hidden;
+    background-color: rgb(5, 12, 48);
+    position: fixed;
+    bottom: 0%;
+    width: 100%;
+}
+
+/* Positions image */
+#image {
+    width: 20%;
+    margin-left:20px;
+}
+</style>
+<script src="./js/darkmodescript.js"></script>
+<script src="./js/rssscript.js"></script>
+</head>
+<body>
+  <!-- Webpage heading and image -->
+    <h3>
+        Welcome to cat!
+    </h3> 
+    <img src="cat2.png" alt="cat!"> 
+    <!-- Contains the bottom bar, which then contains the container for the darkmode button -->
+<div class="bottombar">
+    <div id="darkModeContainer">
+      <!-- Creates button for enabling darkmode -->  
+      <label class="switch">
+        <!-- Applies checkbox type to button and assigns Javascript functions that enable darkmode -->
+        <input type="checkbox" checked onclick="darkModeBody(); darkModeBar();">
+        <span class="slider round"></span>
+      </label>
+      <p>Toggle dark mode on/off</p>
+    </div>  
+</div>
+<!-- Container for the RSS data to be displayed -->
+<div id="rssContainer">
+  <!-- Assigns Javascript functions when the button is clicked that display the RSS data -->
+    <button onclick="fetchRSS(); estherAppear(); textAppear()" id="btnID">Click here for cat!</button>
+    <!-- Text that will appear with a Javascript function when the button is clicked-->
+    <div id="textField" style="display: none;">
+        Click the links for more cat!
+      </div>
+</div>
+<!-- Element for RSS data to be displayed in when script "fetchRSS" is run -->
+<p id="demo"></p>
+<!-- Element for image to be displayed in when script "esther" is run -->
+<img id="image" src=""/>
+
+</body>
+</html>
+
